@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#define MaxNumV 10
+#define MaxNumV 100
 
-char vertex[MaxNumV][20];
+char vertex[MaxNumV][200];
 int edges[MaxNumV][MaxNumV];
 int NumV;
 
 typedef struct {
-    char city[20];
+    char city[40];
     int distance;
 } Node;
 
@@ -178,8 +178,8 @@ void readGraphFromFile(char *verticesFile, char *edgesFile) {
 
     printf("Edges file successfully open...\n");
 
-    char cityFrom[20];
-    char cityTo[20];
+    char cityFrom[40];
+    char cityTo[40];
     int cost;
 
     while (fscanf(fp, "%s %s %d", cityFrom, cityTo, &cost) == 3) {
@@ -219,16 +219,32 @@ int main() {
     readGraphFromFile("vertices.txt", "edges.txt");
 
     int retry;
-    char cityFrom[20];
-    char cityTo[20];
+    char cityFrom[40];
+    char cityTo[40];
 
     do {
-        printf("Cities: Atlanta, Austin, Chicago, Dallas, Denver, Houston, Washington\n"); //prints city menu.
+        
+        FILE *fp = fopen("vertices.txt", "r");
+        int j = 0;
+        int i = 0;  
+        printf("\nAvailable cities\n\t");
+        while(fscanf(fp, "%s", vertex[i]) == 1) { //prints all the available cities.
+            printf("%s\t",vertex[i]);
+            if(j==10){ //each 10 cities prints \n for better understanding.
+                printf("\n\t");
+                j=0;
+            }
+            j++;
+            i++;
+        }
+        fclose(fp);
+        printf("\n");
+        
         do { //scans the source city.
-            printf("Type the source city: ");
+            printf("\nType the source city: ");
             scanf("%s", cityFrom);  
             if (findIndex(cityFrom) == -1) {
-                printf("Invalid city name. Try again.\n");
+                printf("\nInvalid city name. Try again.\n");
             }
         } while (findIndex(cityFrom) == -1);
 
@@ -236,7 +252,7 @@ int main() {
             printf("Type the destination city: ");
             scanf("%s", cityTo);
             if (findIndex(cityTo) == -1) {
-                printf("Invalid city name. Try again.\n");
+                printf("\nInvalid city name. Try again.\n");
             }
         } while (findIndex(cityTo) == -1);
 
@@ -244,8 +260,6 @@ int main() {
 
         printf("Do you want to restart? (1 for yes, 0 for no): ");
         scanf("%d", &retry);
-
     } while (retry == 1);
-    
     return 0;
 }
